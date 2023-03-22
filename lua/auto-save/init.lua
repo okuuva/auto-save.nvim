@@ -18,9 +18,12 @@ api.nvim_create_augroup("AutoSave", {
   clear = true,
 })
 
+-- TODO remove?
 local global_vars = {}
 
 local function set_buf_var(buf, name, value)
+  -- why is this needed? does nvim_get_current_buf() ever return nil?
+  -- TODO remove?
   if buf == nil then
     global_vars[name] = value
   else
@@ -31,6 +34,8 @@ local function set_buf_var(buf, name, value)
 end
 
 local function get_buf_var(buf, name)
+  -- why is this needed? does nvim_get_current_buf() ever return nil?
+  -- TODO remove?
   if buf == nil then
     return global_vars[name]
   end
@@ -79,6 +84,8 @@ function M.save(buf)
 
   callback("before_saving")
 
+  -- why is this needed? auto_save_abort is never set to true?
+  -- TODO: remove?
   if g.auto_save_abort == true then
     return
   end
@@ -101,7 +108,10 @@ end
 local save_func = nil
 
 local function perform_save()
+  -- why is this needed? auto_save_abort is never set to true?
+  -- TODO: remove?
   g.auto_save_abort = false
+
   if save_func == nil then
     save_func = (cnf.opts.debounce_delay > 0 and debounce(M.save, cnf.opts.debounce_delay) or M.save)
   end
