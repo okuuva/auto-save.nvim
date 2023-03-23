@@ -43,7 +43,7 @@ local function get_buf_var(buf, name)
   return success and mod or nil
 end
 
-function M.cancel_timer(buf)
+local function cancel_timer(buf)
   buf = buf or api.nvim_get_current_buf()
 
   local timer = get_buf_var(buf, "timer")
@@ -56,7 +56,7 @@ end
 local function debounce(lfn, duration)
   local function inner_debounce()
     local buf = api.nvim_get_current_buf()
-    M.cancel_timer(buf)
+    cancel_timer(buf)
 
     local timer = vim.defer_fn(function()
         lfn(buf)
@@ -78,7 +78,7 @@ local function echo_execution_message()
   end
 end
 
-function M.save(buf)
+local function save(buf)
   buf = buf or api.nvim_get_current_buf()
 
   callback("before_asserting_save")
@@ -114,22 +114,30 @@ function M.save(buf)
   end
 end
 
-local save_func = nil
+function M.immediate_save()
+    local buf = api.nvim_get_current_buf()
+    cancel_timer(buf)
+    save(buf)
+end
 
+
+local save_func = nil
 local function defer_save()
-  -- why is this needed? auto_save_abort is never set to true?
+  -- why is this needed? auto_save_abort is never set to true anyways?
   -- TODO: remove?
   g.auto_save_abort = false
 
+  -- is it really needed to cache this function
+  -- TODO: remove?
   if save_func == nil then
-    save_func = (cnf.opts.debounce_delay > 0 and debounce(M.save, cnf.opts.debounce_delay) or M.save)
+    save_func = (cnf.opts.debounce_delay > 0 and debounce(save, cnf.opts.debounce_delay) or save)
   end
   save_func()
 end
 
 function M.on()
   api.nvim_create_autocmd(cnf.opts.trigger_events.immediate_save, {
-    callback = M.save,
+    callback = M.immediate_save,
     pattern = "*",
     group = "AutoSave",
     desc = "Immediately save a buffer"
@@ -143,10 +151,12 @@ function M.on()
     desc = "Save a buffer after the `debounce_delay`"
   })
   api.nvim_create_autocmd(cnf.opts.trigger_events.defer_save, {
-    callback = M.cancel_timer,
+    callback = function ()
+      cancel_timer()
+    end,
     pattern = "*",
     group = "AutoSave",
-    desc = "Cancel a running save timer for a buffer"
+    desc = "Cancel a pending save timer for a buffer"
   })
 
   api.nvim_create_autocmd({ "VimEnter", "ColorScheme", "UIEnter" }, {
