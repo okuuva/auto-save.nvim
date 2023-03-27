@@ -18,50 +18,33 @@ api.nvim_create_augroup("AutoSave", {
   clear = true,
 })
 
--- TODO remove?
-local global_vars = {}
+local timers_by_buffer = {}
 
-local function set_buf_var(buf, name, value)
-  -- why is this needed? does nvim_get_current_buf() ever return nil?
-  -- TODO remove?
-  if buf == nil then
-    global_vars[name] = value
-  else
-    if api.nvim_buf_is_valid(buf) then
-      api.nvim_buf_set_var(buf, "autosave_" .. name, value)
-    end
-  end
-end
-
-local function get_buf_var(buf, name)
-  -- why is this needed? does nvim_get_current_buf() ever return nil?
-  -- TODO remove?
-  if buf == nil then
-    return global_vars[name]
-  end
-  local success, mod = pcall(api.nvim_buf_get_var, buf, "autosave_" .. name)
-  return success and mod or nil
-end
-
+-- comm
 local function cancel_timer(buf)
-  local timer = get_buf_var(buf, "timer")
+  local timer = timers_by_buffer[buf]
+  print('cancel timer')
+  print("buffer", buf)
+  print("timer", vim.inspect(timer))
   if timer ~= nil then
     fn.timer_stop(timer)
-    set_buf_var(buf, "timer", nil)
+    timers_by_buffer[buf] = nil
   end
 end
 
 local function debounce(lfn, duration)
   local function inner_debounce(buf)
     cancel_timer(buf)
-
-    local timer = vim.defer_fn(function()
+      local timer = vim.defer_fn(function()
         lfn(buf)
-        set_buf_var(buf, "timer", nil)
-    end, duration)
-    set_buf_var(buf, "timer", timer)
-  end
-  return inner_debounce
+        timers_by_buffer[buf] = nil
+      end, duration)
+      print('defer timer')
+      print("buffer", buf)
+      print("timer", vim.inspect(timer))
+      timers_by_buffer[buf] = timer
+    end
+    return inner_debounce
 end
 
 local function echo_execution_message()
@@ -76,6 +59,9 @@ local function echo_execution_message()
 end
 
 local function save(buf)
+  print('saving')
+  print("buffer", buf)
+
   callback("before_asserting_save")
 
   if cnf.opts.condition(buf) == false then
