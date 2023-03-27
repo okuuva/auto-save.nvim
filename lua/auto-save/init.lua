@@ -20,31 +20,25 @@ api.nvim_create_augroup("AutoSave", {
 
 local timers_by_buffer = {}
 
--- comm
 local function cancel_timer(buf)
   local timer = timers_by_buffer[buf]
-  print('cancel timer')
-  print("buffer", buf)
-  print("timer", vim.inspect(timer))
   if timer ~= nil then
-    fn.timer_stop(timer)
+    timer:close()
     timers_by_buffer[buf] = nil
   end
 end
 
 local function debounce(lfn, duration)
   local function inner_debounce(buf)
+    -- instead of canceling the timer we could check if there is one already running for this buffer and restart it (`:again`)
     cancel_timer(buf)
-      local timer = vim.defer_fn(function()
-        lfn(buf)
-        timers_by_buffer[buf] = nil
-      end, duration)
-      print('defer timer')
-      print("buffer", buf)
-      print("timer", vim.inspect(timer))
-      timers_by_buffer[buf] = timer
-    end
-    return inner_debounce
+    local timer = vim.defer_fn(function()
+      lfn(buf)
+      timers_by_buffer[buf] = nil
+    end, duration)
+    timers_by_buffer[buf] = timer
+  end
+  return inner_debounce
 end
 
 local function echo_execution_message()
@@ -59,9 +53,6 @@ local function echo_execution_message()
 end
 
 local function save(buf)
-  print('saving')
-  print("buffer", buf)
-
   callback("before_asserting_save")
 
   if cnf.opts.condition(buf) == false then
