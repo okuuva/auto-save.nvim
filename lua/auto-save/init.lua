@@ -44,8 +44,6 @@ local function get_buf_var(buf, name)
 end
 
 local function cancel_timer(buf)
-  buf = buf or api.nvim_get_current_buf()
-
   local timer = get_buf_var(buf, "timer")
   if timer ~= nil then
     fn.timer_stop(timer)
@@ -54,8 +52,7 @@ local function cancel_timer(buf)
 end
 
 local function debounce(lfn, duration)
-  local function inner_debounce()
-    local buf = api.nvim_get_current_buf()
+  local function inner_debounce(buf)
     cancel_timer(buf)
 
     local timer = vim.defer_fn(function()
@@ -79,8 +76,6 @@ local function echo_execution_message()
 end
 
 local function save(buf)
-  buf = buf or api.nvim_get_current_buf()
-
   callback("before_asserting_save")
 
   if cnf.opts.condition(buf) == false then
@@ -114,15 +109,15 @@ local function save(buf)
   end
 end
 
-function M.immediate_save()
-    local buf = api.nvim_get_current_buf()
+function M.immediate_save(buf)
+    buf = buf or api.nvim_get_current_buf()
     cancel_timer(buf)
     save(buf)
 end
 
 
 local save_func = nil
-local function defer_save()
+local function defer_save(buf)
   -- why is this needed? auto_save_abort is never set to true anyways?
   -- TODO: remove?
   g.auto_save_abort = false
@@ -132,29 +127,28 @@ local function defer_save()
   if save_func == nil then
     save_func = (cnf.opts.debounce_delay > 0 and debounce(save, cnf.opts.debounce_delay) or save)
   end
-  save_func()
+  save_func(buf)
 end
 
 function M.on()
   api.nvim_create_autocmd(cnf.opts.trigger_events.immediate_save, {
-    callback = M.immediate_save,
-    pattern = "*",
+    callback = function (opts)
+        M.immediate_save(opts.buf)
+    end,
     group = "AutoSave",
     desc = "Immediately save a buffer"
   })
   api.nvim_create_autocmd(cnf.opts.trigger_events.defer_save, {
-    callback = function()
-      defer_save()
+    callback = function(opts)
+      defer_save(opts.buf)
     end,
-    pattern = "*",
     group = "AutoSave",
     desc = "Save a buffer after the `debounce_delay`"
   })
-  api.nvim_create_autocmd(cnf.opts.trigger_events.defer_save, {
-    callback = function ()
-      cancel_timer()
+  api.nvim_create_autocmd(cnf.opts.trigger_events.cancel_defered_save, {
+    callback = function (opts)
+      cancel_timer(opts.buf)
     end,
-    pattern = "*",
     group = "AutoSave",
     desc = "Cancel a pending save timer for a buffer"
   })
@@ -186,7 +180,6 @@ function M.on()
         end
       end)
     end,
-    pattern = "*",
     group = "AutoSave",
   })
 
