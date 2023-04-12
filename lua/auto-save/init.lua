@@ -52,6 +52,18 @@ local function echo_execution_message()
   end
 end
 
+local function should_be_saved(buf)
+  if fn.getbufvar(buf, "&modifiable") == 1 then
+    return false
+  end
+
+  if cnf.opts.condition(buf) == false then
+    return false
+  end
+
+  return true
+end
+
 local function save(buf)
   callback("before_asserting_save")
 
@@ -87,30 +99,31 @@ local function save(buf)
 end
 
 function M.immediate_save(buf)
-    buf = buf or api.nvim_get_current_buf()
+  buf = buf or api.nvim_get_current_buf()
+  if (should_be_saved(buf)) then
     cancel_timer(buf)
     save(buf)
+  end
 end
 
 
 local save_func = nil
 local function defer_save(buf)
-  -- why is this needed? auto_save_abort is never set to true anyways?
-  -- TODO: remove?
-  g.auto_save_abort = false
-
   -- is it really needed to cache this function
   -- TODO: remove?
   if save_func == nil then
     save_func = (cnf.opts.debounce_delay > 0 and debounce(save, cnf.opts.debounce_delay) or save)
   end
-  save_func(buf)
+
+  if should_be_saved(buf) then
+    save_func(buf)
+  end
 end
 
 function M.on()
   api.nvim_create_autocmd(cnf.opts.trigger_events.immediate_save, {
     callback = function (opts)
-        M.immediate_save(opts.buf)
+      M.immediate_save(opts.buf)
     end,
     group = "AutoSave",
     desc = "Immediately save a buffer"
@@ -124,7 +137,9 @@ function M.on()
   })
   api.nvim_create_autocmd(cnf.opts.trigger_events.cancel_defered_save, {
     callback = function (opts)
-      cancel_timer(opts.buf)
+      if should_be_saved(opts.buf) then
+        cancel_timer(opts.buf)
+      end
     end,
     group = "AutoSave",
     desc = "Cancel a pending save timer for a buffer"
