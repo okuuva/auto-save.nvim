@@ -65,12 +65,6 @@ local function should_be_saved(buf)
 end
 
 local function save(buf)
-  callback("before_asserting_save")
-
-  if cnf.opts.condition(buf) == false then
-    return
-  end
-
   if not api.nvim_buf_get_option(buf, "modified") then
     return
   end
