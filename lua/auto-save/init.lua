@@ -53,15 +53,11 @@ local function echo_execution_message()
 end
 
 local function should_be_saved(buf)
-  if fn.getbufvar(buf, "&modifiable") == 1 then
+  if fn.getbufvar(buf, "&modifiable") ~= 1 then
     return false
   end
 
-  if cnf.opts.condition(buf) == false then
-    return false
-  end
-
-  return true
+  return cnf.opts.condition(buf)
 end
 
 local function save(buf)
