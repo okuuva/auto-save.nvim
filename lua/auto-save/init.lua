@@ -52,12 +52,19 @@ local function echo_execution_message()
   end
 end
 
+--- Determines if the given buffer is modifiable and if the condition from the config yields true for it
+--- @param buf number
+--- @return boolean
 local function should_be_saved(buf)
   if fn.getbufvar(buf, "&modifiable") ~= 1 then
     return false
   end
 
-  return cnf.opts.condition(buf)
+  if cnf.opts.condition ~= nil then
+    return cnf.opts.condition(buf)
+  end
+
+  return true
 end
 
 local function save(buf)
@@ -88,12 +95,9 @@ local function save(buf)
   end
 end
 
-function M.immediate_save(buf)
-  buf = buf or api.nvim_get_current_buf()
-  if (should_be_saved(buf)) then
-    cancel_timer(buf)
-    save(buf)
-  end
+local function immediate_save(buf)
+  cancel_timer(buf)
+  save(buf)
 end
 
 
@@ -104,23 +108,24 @@ local function defer_save(buf)
   if save_func == nil then
     save_func = (cnf.opts.debounce_delay > 0 and debounce(save, cnf.opts.debounce_delay) or save)
   end
-
-  if should_be_saved(buf) then
-    save_func(buf)
-  end
+  save_func(buf)
 end
 
 function M.on()
   api.nvim_create_autocmd(cnf.opts.trigger_events.immediate_save, {
     callback = function (opts)
-      M.immediate_save(opts.buf)
+      if should_be_saved(opts.buf) then
+        immediate_save(opts.buf)
+      end
     end,
     group = "AutoSave",
     desc = "Immediately save a buffer"
   })
   api.nvim_create_autocmd(cnf.opts.trigger_events.defer_save, {
     callback = function(opts)
-      defer_save(opts.buf)
+      if should_be_saved(opts.buf) then
+        defer_save(opts.buf)
+      end
     end,
     group = "AutoSave",
     desc = "Save a buffer after the `debounce_delay`"
