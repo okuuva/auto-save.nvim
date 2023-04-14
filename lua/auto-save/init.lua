@@ -100,7 +100,6 @@ local function immediate_save(buf)
   save(buf)
 end
 
-
 local save_func = nil
 local function defer_save(buf)
   -- is it really needed to cache this function
@@ -113,13 +112,13 @@ end
 
 function M.on()
   api.nvim_create_autocmd(cnf.opts.trigger_events.immediate_save, {
-    callback = function (opts)
+    callback = function(opts)
       if should_be_saved(opts.buf) then
         immediate_save(opts.buf)
       end
     end,
     group = "AutoSave",
-    desc = "Immediately save a buffer"
+    desc = "Immediately save a buffer",
   })
   api.nvim_create_autocmd(cnf.opts.trigger_events.defer_save, {
     callback = function(opts)
@@ -128,16 +127,16 @@ function M.on()
       end
     end,
     group = "AutoSave",
-    desc = "Save a buffer after the `debounce_delay`"
+    desc = "Save a buffer after the `debounce_delay`",
   })
   api.nvim_create_autocmd(cnf.opts.trigger_events.cancel_defered_save, {
-    callback = function (opts)
+    callback = function(opts)
       if should_be_saved(opts.buf) then
         cancel_timer(opts.buf)
       end
     end,
     group = "AutoSave",
-    desc = "Cancel a pending save timer for a buffer"
+    desc = "Cancel a pending save timer for a buffer",
   })
 
   api.nvim_create_autocmd({ "VimEnter", "ColorScheme", "UIEnter" }, {
