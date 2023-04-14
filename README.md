@@ -138,6 +138,21 @@ There is a helper functions provided for not saving specified file types:
 }
 ```
 
+You may also exclude `special-buffers` see (`:h buftype` and `:h special-buffers`):
+```lua
+{
+  condition = function(buf)
+    local fn = vim.fn
+
+    -- don't save for special-buffers
+    if fn.getbufvar(buf, "&buftype") ~= '' then
+      return false
+    end
+    return true
+  end
+}
+```
+
 Buffers that are `nomodifiable` are not saved by default.
 
 ### 🪴 Usage
