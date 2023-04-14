@@ -103,18 +103,11 @@ EOF
     defer_save = { "InsertLeave", "TextChanged" }, -- vim events that trigger a deferred save (saves after `debounce_delay`)
     cancel_defered_save = { "InsertEnter" }, -- vim events that cancel a pending deferred save
   },
-  -- function that determines whether to save the current buffer or not
+  -- function that takes the buffer handle and determines whether to save the current buffer or not
   -- return true: if buffer is ok to be saved
   -- return false: if it's not ok to be saved
-  condition = function(buf)
-    local fn = vim.fn
-    local utils = require("auto-save.utils.data")
-
-    if utils.not_in(fn.getbufvar(buf, "&filetype"), {}) then
-      return true -- met condition(s), can save
-    end
-    return false -- can't save
-  end,
+  -- if set to `nil` then no specific condition is applied
+  condition = nil,
   write_all_buffers = false, -- write all buffers when the current one meets `condition`
   debounce_delay = 1000, -- delay after which a pending save is executed
   callbacks = { -- functions to be executed at different intervals
@@ -126,7 +119,34 @@ EOF
 }
 ```
 
-Additionally you may want to set up a key mapping to toggle auto-save:
+#### Condition
+The condition field of the configuration allows the user to exclude **auto-save** from saving specific buffers.
+There is a helper functions provided for not saving specified file types:
+
+```lua
+{
+  condition = function(buf)
+    local fn = vim.fn
+    local utils = require("auto-save.utils.data")
+
+    -- don't save for `sql` file types
+    if utils.not_in(fn.getbufvar(buf, "&filetype"), {'sql'}) then
+      return true
+    end
+    return false
+  end
+}
+```
+
+Buffers that are `nomodifiable` are not saved by default.
+
+### 🪴 Usage
+
+Besides running auto-save at startup (if you have `enabled = true` in your config), you may as well:
+
+- `ASToggle`: toggle auto-save
+
+You may want to set up a key mapping for toggling:
 
 ```lua
 vim.api.nvim_set_keymap("n", "<leader>n", ":ASToggle<CR>", {})
@@ -145,11 +165,6 @@ or as part of the `lazy.nvim` plugin spec:
 
 ```
 
-### 🪴 Usage
-
-Besides running auto-save at startup (if you have `enabled = true` in your config), you may as well:
-
-- `ASToggle`: toggle auto-save
 
 ### 🤝 Contributing
 

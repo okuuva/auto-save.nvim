@@ -14,18 +14,11 @@ Config = {
     defer_save = { "InsertLeave", "TextChanged" }, -- vim events that trigger a deferred save (saves after `debounce_delay`)
     cancel_defered_save = { "InsertEnter" }, -- vim events that cancel a pending deferred save
     },
-    -- function that determines whether to save the current buffer or not
+    -- function that takes the buffer handle and determines whether to save the current buffer or not
     -- return true: if buffer is ok to be saved
     -- return false: if it's not ok to be saved
-    condition = function(buf)
-      local fn = vim.fn
-      local utils = require("auto-save.utils.data")
-
-      if utils.not_in(fn.getbufvar(buf, "&filetype"), {}) then
-        return true -- met condition(s), can save
-      end
-      return false -- can't save
-    end,
+    -- if set to `nil` then no specific condition is applied
+    condition = nil,
     write_all_buffers = false, -- write all buffers when the current one meets `condition`
     debounce_delay = 1000, -- delay after which a pending save is executed
     callbacks = { -- functions to be executed at different intervals
