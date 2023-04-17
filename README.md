@@ -121,8 +121,8 @@ EOF
 
 #### Condition
 The condition field of the configuration allows the user to exclude **auto-save** from saving specific buffers.
-There is a helper functions provided for not saving specified file types:
 
+Here is an example using a helper function from `auto-save.utils.data` that disables auto-save for specified file types:
 ```lua
 {
   condition = function(buf)
