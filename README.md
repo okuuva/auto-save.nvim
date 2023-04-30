@@ -19,7 +19,7 @@
 
 <!-- panvimdoc-ignore-end -->
 
-# 📋 Features
+## 📋 Features
 
 - automatically save your changes so the world doesn't collapse
 - highly customizable:
@@ -30,16 +30,16 @@
 - multiple callbacks
 - automatically clean the message area
 
-# 📚 Requirements
+## 📚 Requirements
 
 - Neovim >= 0.8.0
 
-# 📦 Installation
+## 📦 Installation
 
 Install the plugin with your favourite package manager:
 
 <details>
-## Lazy.nvim
+### Lazy.nvim
 <!-- panvimdoc-ignore-start -->
   <summary><a href="https://github.com/folke/lazy.nvim">Lazy.nvim</a></summary>
 
@@ -59,7 +59,7 @@ Install the plugin with your favourite package manager:
 </details>
 
 <details>
-## Packer.nvim
+### Packer.nvim
 <!-- panvimdoc-ignore-start -->
   <summary><a href="https://github.com/wbthomason/packer.nvim">Packer.nvim</a></summary>
 <!-- panvimdoc-ignore-end -->
@@ -79,7 +79,7 @@ use({
 </details>
 
 <details>
-## vim-plug
+### vim-plug
 <!-- panvimdoc-ignore-start -->
   <summary><a href="https://github.com/junegunn/vim-plug">vim-plug</a></summary>
 <!-- panvimdoc-ignore-end -->
@@ -96,7 +96,7 @@ EOF
 
 </details>
 
-# ⚙️ Configuration
+## ⚙️ Configuration
 
 **auto-save** comes with the following defaults:
 
@@ -131,7 +131,7 @@ EOF
 }
 ```
 
-## Condition
+### Condition
 
 The condition field of the configuration allows the user to exclude **auto-save** from saving specific buffers.
 
@@ -170,7 +170,7 @@ You may also exclude `special-buffers` see (`:h buftype` and `:h special-buffers
 
 Buffers that are `nomodifiable` are not saved by default.
 
-# 🚀 Usage
+## 🚀 Usage
 
 Besides running auto-save at startup (if you have `enabled = true` in your config), you may as well:
 
@@ -195,13 +195,13 @@ or as part of the `lazy.nvim` plugin spec:
 
 ```
 
-# 🤝 Contributing
+## 🤝 Contributing
 
 - All pull requests are welcome.
 - If you encounter bugs please open an issue.
 - Please use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) when commiting.
   - See [@commitlint/config-conventional](https://github.com/conventional-changelog/commitlint/tree/master/@commitlint/config-conventional) for more details.
 
-# 👋 Acknowledgements
+## 👋 Acknowledgements
 
 This plugin wouldn't exist without [Pocco81](https://github.com/Pocco81)'s work on the [original](https://github.com/Pocco81/auto-save.nvim).

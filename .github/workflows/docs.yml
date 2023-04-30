@@ -14,6 +14,7 @@ jobs:
           version: "Neovim >= 0.8.0"
           demojify: true
           treesitter: true
+          shiftheadinglevelby: -1
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           branch: ${{ github.head_ref }}
