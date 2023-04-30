@@ -1,11 +1,8 @@
-<p align="center">
-  <h2 align="center">🧶 auto-save.nvim</h2>
-</p>
+# 🧶 auto-save.nvim
 
-<p align="center">
-  Automatically save your changes in NeoVim
-</p>
+Automatically save your changes in Neovim
 
+<!-- panvimdoc-ignore-start -->
 <p align="center">
   <a href="https://github.com/okuuva/auto-save.nvim/stargazers">
     <img alt="Stars" src="https://img.shields.io/github/stars/okuuva/auto-save.nvim?style=for-the-badge&logo=starship&color=C9CBFF&logoColor=D9E0EE&labelColor=302D41"></a>
@@ -15,7 +12,9 @@
     <img alt="Repo Size" src="https://img.shields.io/github/repo-size/okuuva/auto-save.nvim?color=%23DDB6F2&label=SIZE&logo=codesandbox&style=for-the-badge&logoColor=D9E0EE&labelColor=302D41"/></a>
 </p>
 
-### 📋 Features
+<!-- panvimdoc-ignore-end -->
+
+# 📋 Features
 
 - automatically save your changes so the world doesn't collapse
 - highly customizable:
@@ -26,17 +25,20 @@
 - multiple callbacks
 - automatically clean the message area
 
-### 📚 Requirements
+# 📚 Requirements
 
-- Neovim >= 0.5.0
+- Neovim >= 0.8.0
 
-### 📦 Installation
+# 📦 Installation
 
 Install the plugin with your favourite package manager:
 
 <details>
+## Lazy.nvim
+<!-- panvimdoc-ignore-start -->
   <summary><a href="https://github.com/folke/lazy.nvim">Lazy.nvim</a></summary>
 
+<!-- panvimdoc-ignore-end -->
 ```lua
 {
   "okuuva/auto-save.nvim",
@@ -52,7 +54,10 @@ Install the plugin with your favourite package manager:
 </details>
 
 <details>
+## Packer.nvim
+<!-- panvimdoc-ignore-start -->
   <summary><a href="https://github.com/wbthomason/packer.nvim">Packer.nvim</a></summary>
+<!-- panvimdoc-ignore-end -->
 
 ```lua
 use({
@@ -69,7 +74,10 @@ use({
 </details>
 
 <details>
+## vim-plug
+<!-- panvimdoc-ignore-start -->
   <summary><a href="https://github.com/junegunn/vim-plug">vim-plug</a></summary>
+<!-- panvimdoc-ignore-end -->
 
 ```vim
 Plug 'okuuva/auto-save.nvim'
@@ -83,7 +91,7 @@ EOF
 
 </details>
 
-### ⚙️ Configuration
+# ⚙️ Configuration
 
 **auto-save** comes with the following defaults:
 
@@ -118,10 +126,12 @@ EOF
 }
 ```
 
-#### Condition
+## Condition
+
 The condition field of the configuration allows the user to exclude **auto-save** from saving specific buffers.
 
 Here is an example using a helper function from `auto-save.utils.data` that disables auto-save for specified file types:
+
 ```lua
 {
   condition = function(buf)
@@ -138,6 +148,7 @@ Here is an example using a helper function from `auto-save.utils.data` that disa
 ```
 
 You may also exclude `special-buffers` see (`:h buftype` and `:h special-buffers`):
+
 ```lua
 {
   condition = function(buf)
@@ -154,7 +165,7 @@ You may also exclude `special-buffers` see (`:h buftype` and `:h special-buffers
 
 Buffers that are `nomodifiable` are not saved by default.
 
-### 🪴 Usage
+# 🚀 Usage
 
 Besides running auto-save at startup (if you have `enabled = true` in your config), you may as well:
 
@@ -179,14 +190,13 @@ or as part of the `lazy.nvim` plugin spec:
 
 ```
 
-
-### 🤝 Contributing
+# 🤝 Contributing
 
 - All pull requests are welcome.
 - If you encounter bugs please open an issue.
 - Please use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) when commiting.
   - See [@commitlint/config-conventional](https://github.com/conventional-changelog/commitlint/tree/master/@commitlint/config-conventional) for more details.
 
-### 👋 Acknowledgements
+# 👋 Acknowledgements
 
 This plugin wouldn't exist without [Pocco81](https://github.com/Pocco81)'s work on the [original](https://github.com/Pocco81/auto-save.nvim).
