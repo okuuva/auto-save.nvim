@@ -44,12 +44,8 @@
 
 Install the plugin with your favourite package manager:
 
-<details>
-### Lazy.nvim
-<!-- panvimdoc-ignore-start -->
-  <summary><a href="https://github.com/folke/lazy.nvim">Lazy.nvim</a></summary>
+### [Lazy.nvim]("https://github.com/folke/lazy.nvim")
 
-<!-- panvimdoc-ignore-end -->
 ```lua
 {
   "okuuva/auto-save.nvim",
@@ -62,13 +58,7 @@ Install the plugin with your favourite package manager:
 },
 ```
 
-</details>
-
-<details>
-### Packer.nvim
-<!-- panvimdoc-ignore-start -->
-  <summary><a href="https://github.com/wbthomason/packer.nvim">Packer.nvim</a></summary>
-<!-- panvimdoc-ignore-end -->
+### [Packer.nvim]("https://github.com/wbthomason/packer.nvim")
 
 ```lua
 use({
@@ -82,13 +72,7 @@ use({
 })
 ```
 
-</details>
-
-<details>
-### vim-plug
-<!-- panvimdoc-ignore-start -->
-  <summary><a href="https://github.com/junegunn/vim-plug">vim-plug</a></summary>
-<!-- panvimdoc-ignore-end -->
+### [vim-plug]("https://github.com/junegunn/vim-plug")
 
 ```vim
 Plug 'okuuva/auto-save.nvim'
