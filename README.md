@@ -1,8 +1,13 @@
-# 🧶 auto-save.nvim
-
-Automatically save your changes in Neovim
-
 <!-- panvimdoc-ignore-start -->
+<p align="center">
+  <h1 align="center">🧶 auto-save.nvim</h1>
+</p>
+
+<p align="center">
+  <b>auto-save.nvim</b> is a lua plugin for automatically saving your changed buffers in Neovim<br>
+  Forked from <a href="https://github.com/Pocco81/auto-save.nvim">auto-save.nvim</a> as active development has stopped
+</p>
+
 <p align="center">
   <a href="https://github.com/okuuva/auto-save.nvim/stargazers">
     <img alt="Stars" src="https://img.shields.io/github/stars/okuuva/auto-save.nvim?style=for-the-badge&logo=starship&color=C9CBFF&logoColor=D9E0EE&labelColor=302D41"></a>

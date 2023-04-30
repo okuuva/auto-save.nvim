@@ -1,29 +1,22 @@
-*auto-save.nvim.txt*       For Neovim >= 0.8.0      Last change: 2023 April 30
+*auto-save.nvim.txt*                                Last change: 2023 April 30
 
 ==============================================================================
 Table of Contents                           *auto-save.nvim-table-of-contents*
 
-1. auto-save.nvim                              |auto-save.nvim-auto-save.nvim|
-2. Features                                          |auto-save.nvim-features|
-3. Requirements                                  |auto-save.nvim-requirements|
-4. Installation                                  |auto-save.nvim-installation|
+1. Features                                          |auto-save.nvim-features|
+2. Requirements                                  |auto-save.nvim-requirements|
+3. Installation                                  |auto-save.nvim-installation|
   - Lazy.nvim                          |auto-save.nvim-installation-lazy.nvim|
   - Packer.nvim                      |auto-save.nvim-installation-packer.nvim|
   - vim-plug                            |auto-save.nvim-installation-vim-plug|
-5. Configuration                                |auto-save.nvim-configuration|
+4. Configuration                                |auto-save.nvim-configuration|
   - Condition                         |auto-save.nvim-configuration-condition|
-6. Usage                                                |auto-save.nvim-usage|
-7. Contributing                                  |auto-save.nvim-contributing|
-8. Acknowledgements                          |auto-save.nvim-acknowledgements|
+5. Usage                                                |auto-save.nvim-usage|
+6. Contributing                                  |auto-save.nvim-contributing|
+7. Acknowledgements                          |auto-save.nvim-acknowledgements|
 
 ==============================================================================
-1. auto-save.nvim                              *auto-save.nvim-auto-save.nvim*
-
-Automatically save your changes in Neovim
-
-
-==============================================================================
-2. Features                                          *auto-save.nvim-features*
+1. Features                                          *auto-save.nvim-features*
 
 
 - automatically save your changes so the world doesn’t collapse
@@ -37,14 +30,14 @@ Automatically save your changes in Neovim
 
 
 ==============================================================================
-3. Requirements                                  *auto-save.nvim-requirements*
+2. Requirements                                  *auto-save.nvim-requirements*
 
 
 - Neovim >= 0.8.0
 
 
 ==============================================================================
-4. Installation                                  *auto-save.nvim-installation*
+3. Installation                                  *auto-save.nvim-installation*
 
 Install the plugin with your favourite package manager:
 
@@ -93,7 +86,7 @@ VIM-PLUG                                *auto-save.nvim-installation-vim-plug*
 
 
 ==============================================================================
-5. Configuration                                *auto-save.nvim-configuration*
+4. Configuration                                *auto-save.nvim-configuration*
 
 **auto-save** comes with the following defaults:
 
@@ -173,7 +166,7 @@ Buffers that are `nomodifiable` are not saved by default.
 
 
 ==============================================================================
-6. Usage                                                *auto-save.nvim-usage*
+5. Usage                                                *auto-save.nvim-usage*
 
 Besides running auto-save at startup (if you have `enabled = true` in your
 config), you may as well:
@@ -201,7 +194,7 @@ or as part of the `lazy.nvim` plugin spec:
 
 
 ==============================================================================
-7. Contributing                                  *auto-save.nvim-contributing*
+6. Contributing                                  *auto-save.nvim-contributing*
 
 
 - All pull requests are welcome.
@@ -211,13 +204,13 @@ or as part of the `lazy.nvim` plugin spec:
 
 
 ==============================================================================
-8. Acknowledgements                          *auto-save.nvim-acknowledgements*
+7. Acknowledgements                          *auto-save.nvim-acknowledgements*
 
 This plugin wouldn’t exist without Pocco81 <https://github.com/Pocco81>’s
 work on the original <https://github.com/Pocco81/auto-save.nvim>.
 
 ==============================================================================
-9. Links                                                *auto-save.nvim-links*
+8. Links                                                *auto-save.nvim-links*
 
 1. *@commitlint/config-conventional*: 
 
