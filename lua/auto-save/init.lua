@@ -142,7 +142,7 @@ function M.on()
     desc = "Cancel a pending save timer for a buffer",
   })
 
-  local function dim()
+  local function setup_dimming()
     if cnf.opts.execution_message.enabled then
       schedule(function()
         colors.apply_colors(cnf.opts.execution_message.dim)
@@ -150,10 +150,10 @@ function M.on()
     end
   end
 
-  dim()
+  setup_dimming()
   api.nvim_create_autocmd("ColorScheme", {
     callback = function()
-      dim()
+      setup_dimming()
     end,
     group = augroup,
   })

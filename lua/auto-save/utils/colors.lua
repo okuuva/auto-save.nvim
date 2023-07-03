@@ -7,7 +7,6 @@ local auto_save_hl_group = "MsgArea"
 
 local M = {}
 
-
 ---@param hex_str string hexadecimal value of a color
 local hex_to_rgb = function(hex_str)
   local hex = "[abcdef0-9][abcdef0-9]"
@@ -73,20 +72,19 @@ end
 
 --- @param dim_value number
 M.apply_colors = function(dim_value)
-    if dim_value > 0 then
-      MSG_AREA = get_hl("MsgArea")
-      if MSG_AREA.foreground ~= nil then
-        MSG_AREA.background = (MSG_AREA.background or get_hl("Normal")["background"])
-        -- TODO maybe there is a hiccup here, test a bit
-        local foreground = (
-          o.background == "dark" and blend((MSG_AREA.background or BLACK), MSG_AREA.foreground or BLACK, dim_value)
-          or blend((MSG_AREA.background or WHITE), MSG_AREA.foreground or WHITE, dim_value)
-        )
+  if dim_value > 0 then
+    MSG_AREA = get_hl("MsgArea")
+    if MSG_AREA.foreground ~= nil then
+      MSG_AREA.background = (MSG_AREA.background or get_hl("Normal")["background"])
+      local foreground = (
+        o.background == "dark" and blend(MSG_AREA.background or BLACK, MSG_AREA.foreground or BLACK, dim_value)
+        or blend(MSG_AREA.background or WHITE, MSG_AREA.foreground or WHITE, dim_value)
+      )
 
-        highlight("AutoSaveText", { fg = foreground })
-        auto_save_hl_group = "AutoSaveText"
-      end
+      highlight("AutoSaveText", { fg = foreground })
+      auto_save_hl_group = "AutoSaveText"
     end
+  end
 end
 
 --- @param message string
