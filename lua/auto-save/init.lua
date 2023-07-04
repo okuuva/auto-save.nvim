@@ -46,6 +46,7 @@ end
 local function echo_execution_message()
   local message = cnf.opts.execution_message.message
   local msg = type(message) == "function" and message() or message
+  ---@diagnostic disable-next-line: deprecated
   colors.echo_with_highlight(msg --[[@as string]])
   if cnf.opts.execution_message.cleaning_interval > 0 then
     fn.timer_start(cnf.opts.execution_message.cleaning_interval, function()
@@ -145,6 +146,7 @@ function M.on()
   local function setup_dimming()
     if cnf.opts.execution_message.enabled then
       schedule(function()
+        ---@diagnostic disable-next-line: deprecated
         colors.apply_colors(cnf.opts.execution_message.dim)
       end)
     end

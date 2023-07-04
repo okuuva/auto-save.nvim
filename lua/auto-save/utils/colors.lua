@@ -1,3 +1,6 @@
+--- This file is deprecated and should be removed in the future.
+--- It is still in use but the functionality does not belong in the scope of this plugin
+
 local o = vim.o
 local api = vim.api
 
@@ -70,6 +73,9 @@ local function blend(fg, bg, alpha)
   return string.format("#%02X%02X%02X", blendChannel(1), blendChannel(2), blendChannel(3))
 end
 
+--- This function is still in use, but should be removed in the future.
+--- The dimming should be done by the colorscheme or an UI Plugin.
+--- @deprecated
 --- @param dim_value number
 M.apply_colors = function(dim_value)
   if dim_value > 0 then
@@ -87,6 +93,8 @@ M.apply_colors = function(dim_value)
   end
 end
 
+--- @deprecated
+--- @see M.apply_colors
 --- @param message string
 M.echo_with_highlight = function(message)
   api.nvim_echo({ { message, auto_save_hl_group } }, true, {})
