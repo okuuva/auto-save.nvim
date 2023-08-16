@@ -98,7 +98,9 @@ local function save(buf)
   end
 end
 
-local function immediate_save(buf)
+--- Saves the given buffer immediately, canceling any pending timers.
+--- @param buf number
+function M.immediate_save(buf)
   cancel_timer(buf)
   save(buf)
 end
@@ -122,7 +124,7 @@ function M.on()
     api.nvim_create_autocmd(events.immediate_save, {
       callback = function(opts)
         if should_be_saved(opts.buf) then
-          immediate_save(opts.buf)
+          M.immediate_save(opts.buf)
         end
       end,
       group = augroup,
