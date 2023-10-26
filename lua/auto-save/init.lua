@@ -117,7 +117,6 @@ function M.on()
   local augroup = autocmds.create_augroup({ clear = true })
 
   local events = cnf.opts.trigger_events
-
   autocmds.create_autocmd_for_trigger_events(events.immediate_save, {
     callback = function(opts)
       if should_be_saved(opts.buf) then

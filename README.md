@@ -129,7 +129,9 @@ It is also possible to pass a pattern to a trigger event, if you only want to ex
 ``` lua
 {
   trigger_events = {
-    immediate_save = { "BufLeave", pattern = {"*.c", "*.h"} }
+    immediate_save = {
+      { "BufLeave", pattern = {"*.c", "*.h"} }
+    }
   }
 }
 ```
