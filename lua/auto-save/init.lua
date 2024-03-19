@@ -129,7 +129,7 @@ function M.on()
     group = augroup,
     desc = "Save a buffer after the `debounce_delay`",
   })
-  autocmds.create_autocmd_for_trigger_events(events.cancel_defered_save, {
+  autocmds.create_autocmd_for_trigger_events(events.cancel_deferred_save, {
     callback = function(opts)
       if should_be_saved(opts.buf) then
         cancel_timer(opts.buf)
