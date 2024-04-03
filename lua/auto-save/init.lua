@@ -73,6 +73,10 @@ local function should_be_saved(buf)
 end
 
 local function save(buf)
+  if not api.nvim_buf_is_loaded(buf) then
+    return
+  end
+
   if not api.nvim_buf_get_option(buf, "modified") then
     logger.log(buf, "Abort saving buffer")
 
