@@ -18,6 +18,7 @@ autocmds.create_augroup({ clear = true })
 
 local timers_by_buffer = {}
 
+--- @param buf number
 local function cancel_timer(buf)
   local timer = timers_by_buffer[buf]
   if timer ~= nil then
@@ -28,6 +29,9 @@ local function cancel_timer(buf)
   end
 end
 
+--- @param lfn fun(buf: number) The function to debounce
+--- @param duration number The debounce duration
+--- @return fun(buf: number) debounced The debounced function
 local function debounce(lfn, duration)
   local function inner_debounce(buf)
     -- instead of canceling the timer we could check if there is one already running for this buffer and restart it (`:again`)
@@ -72,6 +76,7 @@ local function should_be_saved(buf)
   return true
 end
 
+--- @param buf number
 local function save(buf)
   if not api.nvim_buf_is_loaded(buf) then
     return
@@ -87,10 +92,10 @@ local function save(buf)
 
   local noautocmd = cnf.opts.noautocmd and "noautocmd " or ""
   if cnf.opts.write_all_buffers then
-    cmd(noautocmd .. "silent! wall")
+    cmd(noautocmd .. "lockmarks silent! wall")
   else
     api.nvim_buf_call(buf, function()
-      cmd(noautocmd .. "silent! write")
+      cmd(noautocmd .. "lockmarks silent! write")
     end)
   end
 
@@ -102,12 +107,14 @@ local function save(buf)
   end
 end
 
+--- @param buf number
 local function immediate_save(buf)
   cancel_timer(buf)
   save(buf)
 end
 
 local save_func = nil
+--- @param buf number
 local function defer_save(buf)
   -- is it really needed to cache this function
   -- TODO: remove?
