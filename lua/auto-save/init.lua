@@ -91,11 +91,12 @@ local function save(buf)
   autocmds.exec_autocmd("AutoSaveWritePre", { saved_buffer = buf })
 
   local noautocmd = cnf.opts.noautocmd and "noautocmd " or ""
+  local lockmarks = cnf.opts.lockmarks and "lockmarks " or ""
   if cnf.opts.write_all_buffers then
-    cmd(noautocmd .. "lockmarks silent! wall")
+    cmd(noautocmd .. lockmarks .. "silent! wall")
   else
     api.nvim_buf_call(buf, function()
-      cmd(noautocmd .. "lockmarks silent! write")
+      cmd(noautocmd .. lockmarks .. "silent! write")
     end)
   end
 
