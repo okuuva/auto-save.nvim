@@ -2,14 +2,12 @@ local M = {}
 
 --- @class Config
 local cnf = require("auto-save.config")
-local colors = require("auto-save.utils.colors")
 local echo = require("auto-save.utils.echo")
 local autocmds = require("auto-save.utils.autocommands")
 
 local api = vim.api
 local fn = vim.fn
 local cmd = vim.cmd
-local schedule = vim.schedule
 
 local logger
 local autosave_running = nil
@@ -45,18 +43,6 @@ local function debounce(lfn, duration)
     logger.log(buf, "Timer started")
   end
   return inner_debounce
-end
-
-local function echo_execution_message()
-  local message = cnf.opts.execution_message.message
-  local msg = type(message) == "function" and message() or message
-  ---@diagnostic disable-next-line: deprecated
-  colors.echo_with_highlight(msg --[[@as string]])
-  if cnf.opts.execution_message.cleaning_interval > 0 then
-    fn.timer_start(cnf.opts.execution_message.cleaning_interval, function()
-      cmd([[echon '']])
-    end)
-  end
 end
 
 --- Determines if the given buffer is modifiable and if the condition from the config yields true for it
@@ -102,10 +88,6 @@ local function save(buf)
 
   autocmds.exec_autocmd("AutoSaveWritePost", { saved_buffer = buf })
   logger.log(buf, "Saved buffer")
-
-  if cnf.opts.execution_message.enabled == true then
-    echo_execution_message()
-  end
 end
 
 --- @param buf number
@@ -155,23 +137,6 @@ function M.on()
     end,
     group = augroup,
     desc = "Cancel a pending save timer for a buffer",
-  })
-
-  local function setup_dimming()
-    if cnf.opts.execution_message.enabled then
-      schedule(function()
-        ---@diagnostic disable-next-line: deprecated
-        colors.apply_colors(cnf.opts.execution_message.dim)
-      end)
-    end
-  end
-
-  setup_dimming()
-  api.nvim_create_autocmd("ColorScheme", {
-    callback = function()
-      setup_dimming()
-    end,
-    group = augroup,
   })
 
   autosave_running = true

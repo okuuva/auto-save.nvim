@@ -2,15 +2,6 @@
 Config = {
   opts = {
     enabled = true, -- start auto-save when the plugin is loaded (i.e. when your package manager loads it)
-    execution_message = {
-      enabled = true,
-      --- @type string|fun(): string
-      message = function() -- message to print on save
-        return ("AutoSave: saved at " .. vim.fn.strftime("%H:%M:%S"))
-      end,
-      dim = 0.18, -- dim the color of `message`
-      cleaning_interval = 1250, -- (milliseconds) automatically clean MsgArea after displaying `message`. See :h MsgArea
-    },
     trigger_events = { -- See :h events
       --- @type TriggerEvent[]?
       immediate_save = { "BufLeave", "FocusLost" }, -- vim events that trigger an immediate save
@@ -34,9 +25,24 @@ Config = {
   },
 }
 
-function Config:set_options(opts)
-  opts = opts or {}
-  self.opts = vim.tbl_deep_extend("keep", opts, self.opts)
+function Config:handle_deprecations(custom_opts)
+  if custom_opts["execution_message"] then
+    vim.notify(
+      "The `execution_message` has been removed from the auto-save.nvim plugin. Check the Readme on how to add it yourself.",
+      vim.log.levels.WARN
+    )
+    custom_opts["execution_message"] = nil
+  end
+
+  return custom_opts
+end
+
+function Config:set_options(custom_opts)
+  custom_opts = custom_opts or {}
+
+  custom_opts = self.handle_deprecations(custom_opts)
+
+  self.opts = vim.tbl_deep_extend("keep", custom_opts, self.opts)
 end
 
 function Config:get_options()
