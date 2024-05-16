@@ -48,7 +48,7 @@ Install the plugin with your favourite package manager:
 ```lua
 {
   "okuuva/auto-save.nvim",
-  version = '*', -- see https://devhints.io/semver, alternatively use '1' to avoid breaking changes
+  version = '*', -- see https://devhints.io/semver, alternatively use '>=1.0.0' to avoid breaking changes
   cmd = "ASToggle", -- optional for lazy loading on command
   event = { "InsertLeave", "TextChanged" }, -- optional for lazy loading on trigger events
   opts = {
