@@ -48,7 +48,7 @@ Install the plugin with your favourite package manager:
 ```lua
 {
   "okuuva/auto-save.nvim",
-  version = '*', -- see https://devhints.io/semver, alternatively use '>=1.0.0' to avoid breaking changes
+  version = '^1.0.0', -- see https://devhints.io/semver, alternatively use '*' to use the latest tagged release
   cmd = "ASToggle", -- optional for lazy loading on command
   event = { "InsertLeave", "TextChanged" }, -- optional for lazy loading on trigger events
   opts = {
@@ -63,7 +63,7 @@ Install the plugin with your favourite package manager:
 ```lua
 use({
   "okuuva/auto-save.nvim",
-  tag = '*',
+  tag = 'v1*',
   config = function()
    require("auto-save").setup {
      -- your config goes here
@@ -76,7 +76,7 @@ use({
 ### [vim-plug]("https://github.com/junegunn/vim-plug")
 
 ```vim
-Plug 'okuuva/auto-save.nvim', { 'tag': '*' }
+Plug 'okuuva/auto-save.nvim', { 'tag': 'v1*' }
 lua << EOF
   require("auto-save").setup {
     -- your config goes here
