@@ -30,7 +30,6 @@
 - automatically save your changes so the world doesn't collapse
 - highly customizable:
   - conditionals to assert whether to save or not
-  - execution message (it can be dimmed and personalized)
   - events that trigger auto-save
 - debounce the save with a delay
 - hook into the lifecycle with autocommands
@@ -49,6 +48,7 @@ Install the plugin with your favourite package manager:
 ```lua
 {
   "okuuva/auto-save.nvim",
+  version = '^1.0.0', -- see https://devhints.io/semver, alternatively use '*' to use the latest tagged release
   cmd = "ASToggle", -- optional for lazy loading on command
   event = { "InsertLeave", "TextChanged" }, -- optional for lazy loading on trigger events
   opts = {
@@ -63,6 +63,7 @@ Install the plugin with your favourite package manager:
 ```lua
 use({
   "okuuva/auto-save.nvim",
+  tag = 'v1*',
   config = function()
    require("auto-save").setup {
      -- your config goes here
@@ -75,7 +76,7 @@ use({
 ### [vim-plug]("https://github.com/junegunn/vim-plug")
 
 ```vim
-Plug 'okuuva/auto-save.nvim'
+Plug 'okuuva/auto-save.nvim', { 'tag': 'v1*' }
 lua << EOF
   require("auto-save").setup {
     -- your config goes here
@@ -93,14 +94,6 @@ EOF
 ```lua
 {
   enabled = true, -- start auto-save when the plugin is loaded (i.e. when your package manager loads it)
-  execution_message = {
-    enabled = true,
-    message = function() -- message to print on save
-      return ("AutoSave: saved at " .. vim.fn.strftime("%H:%M:%S"))
-    end,
-    dim = 0.18, -- dim the color of `message`
-    cleaning_interval = 1250, -- (milliseconds) automatically clean MsgArea after displaying `message`. See :h MsgArea
-  },
   trigger_events = { -- See :h events
     immediate_save = { "BufLeave", "FocusLost" }, -- vim events that trigger an immediate save
     defer_save = { "InsertLeave", "TextChanged" }, -- vim events that trigger a deferred save (saves after `debounce_delay`)
@@ -212,18 +205,18 @@ The plugin fires events at various points during its lifecycle which users can h
 
 It will always supply the current buffer in the `data.saved_buffer`
 
-An example to always print the file name before a file is getting saved (use `:messages` if the execution message swallows the print):
+An example to print a message with the file name after a file got saved:
 
 ```lua
 local group = vim.api.nvim_create_augroup('autosave', {})
 
 vim.api.nvim_create_autocmd('User', {
-    pattern = 'AutoSaveWritePre',
+    pattern = 'AutoSaveWritePost',
     group = group,
     callback = function(opts)
         if opts.data.saved_buffer ~= nil then
             local filename = vim.api.nvim_buf_get_name(opts.data.saved_buffer)
-            print('We are about to save ' .. filename .. ' get ready captain!')
+            print('AutoSave: saved ' .. filename .. ' at ' .. vim.fn.strftime('%H:%M:%S'))
         end
     end,
 })
