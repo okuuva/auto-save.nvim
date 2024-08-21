@@ -34,6 +34,15 @@ function Config:handle_deprecations(custom_opts)
     custom_opts["execution_message"] = nil
   end
 
+  if custom_opts["cancel_defered_save"] then
+    vim.notify(
+      "The `cancel_defered_save` config option in the auto-save.nvim plugin has been renamed to `cancel_deferred_save`.",
+      vim.log.levels.WARN
+    )
+    custom_opts["cancel_deferred_save"] = custom_opts["cancel_defered_save"]
+    custom_opts["cancel_defered_save"] = nil
+  end
+
   return custom_opts
 end
 
