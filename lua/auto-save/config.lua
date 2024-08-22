@@ -49,7 +49,7 @@ end
 function Config:set_options(custom_opts)
   custom_opts = custom_opts or {}
 
-  custom_opts = self.handle_deprecations(custom_opts)
+  custom_opts = self:handle_deprecations(custom_opts)
 
   self.opts = vim.tbl_deep_extend("keep", custom_opts, self.opts)
 end
