@@ -32,7 +32,7 @@ end
 --- @param trigger_events TriggerEvent[]?
 M.create_autocmd_for_trigger_events = function(trigger_events, autocmd_opts)
   if trigger_events ~= nil then
-    for _, event in pairs(trigger_events) do
+    for _, event in ipairs(trigger_events) do
       local parsed_event = parse_trigger_event(event)
       local autocmd_opts_with_pattern = vim.tbl_extend("force", autocmd_opts, { pattern = parsed_event.pattern })
       api.nvim_create_autocmd(parsed_event[1], autocmd_opts_with_pattern)
