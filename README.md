@@ -143,7 +143,7 @@ Here is an example that disables auto-save for specified file types:
 
     -- don't save for `sql` file types
     if vim.list_contains({ "sql" }, filetype) then
-      return true
+      return false
     end
     return false
   end
@@ -213,8 +213,30 @@ vim.api.nvim_create_autocmd('User', {
     callback = function(opts)
         if opts.data.saved_buffer ~= nil then
             local filename = vim.api.nvim_buf_get_name(opts.data.saved_buffer)
-            print('AutoSave: saved ' .. filename .. ' at ' .. vim.fn.strftime('%H:%M:%S'))
+            vim.notify('AutoSave: saved ' .. filename .. ' at ' .. vim.fn.strftime('%H:%M:%S'), vim.log.levels.INFO)
         end
+    end,
+})
+```
+
+Another example to print a message when enabling/disabling autosave:
+
+```lua
+local group = vim.api.nvim_create_augroup('autosave', {})
+
+vim.api.nvim_create_autocmd('User', {
+    pattern = 'AutoSaveEnable',
+    group = group,
+    callback = function(opts)
+        vim.notify('AutoSave enabled', vim.log.levels.INFO)
+    end,
+})
+
+vim.api.nvim_create_autocmd('User', {
+    pattern = 'AutoSaveDisable',
+    group = group,
+    callback = function(opts)
+        vim.notify('AutoSave disabled', vim.log.levels.INFO)
     end,
 })
 ```
