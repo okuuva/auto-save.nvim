@@ -156,7 +156,7 @@ You may also exclude `special-buffers` see (`:h buftype` and `:h special-buffers
 {
   condition = function(buf)
     -- don't save for special-buffers
-    if fn.getbufvar(buf, "&buftype") ~= '' then
+    if vim.fn.getbufvar(buf, "&buftype") ~= '' then
       return false
     end
     return true
