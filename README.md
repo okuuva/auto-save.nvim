@@ -145,7 +145,7 @@ Here is an example that disables auto-save for specified file types:
     if vim.list_contains({ "sql" }, filetype) then
       return false
     end
-    return false
+    return true
   end
 }
 ```
