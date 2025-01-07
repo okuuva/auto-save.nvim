@@ -4,7 +4,7 @@ Config = {
     enabled = true, -- start auto-save when the plugin is loaded (i.e. when your package manager loads it)
     trigger_events = { -- See :h events
       --- @type TriggerEvent[]?
-      immediate_save = { "BufLeave", "FocusLost" }, -- vim events that trigger an immediate save
+      immediate_save = { "BufLeave", "FocusLost", "QuitPre", "VimSuspend" }, -- vim events that trigger an immediate save
       --- @type TriggerEvent[]?
       defer_save = { "InsertLeave", "TextChanged" }, -- vim events that trigger a deferred save (saves after `debounce_delay`)
       --- @type TriggerEvent[]?
