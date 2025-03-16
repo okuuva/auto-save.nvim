@@ -170,6 +170,20 @@ function M.setup(custom_opts)
       M.off()
     end
   end
+
+  api.nvim_create_autocmd("ModeChanged", {
+    pattern = "*:[vV]", -- When entering any Visual mode
+    callback = function()
+      cancel_timer(api.nvim_get_current_buf())
+    end,
+  })
+
+  api.nvim_create_autocmd("ModeChanged", {
+    pattern = "[vV]:*", -- When exiting any Visual mode
+    callback = function()
+      defer_save(api.nvim_get_current_buf())
+    end,
+  })
 end
 
 return M
