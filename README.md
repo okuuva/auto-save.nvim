@@ -141,8 +141,10 @@ Here is an example that disables auto-save for specified file types:
   condition = function(buf)
     local filetype = vim.fn.getbufvar(buf, "&filetype")
 
-    -- don't save for `sql` file types
-    if vim.list_contains({ "sql" }, filetype) then
+    -- don't save for `sql` and `gitcommit` file types
+    -- Disabling in gitcommit buffers is useful since it restores the ability
+    -- to cancel the commit by exiting the message buffer without saving
+    if vim.list_contains({ "sql", "gitcommit" }, filetype) then
       return false
     end
     return true
