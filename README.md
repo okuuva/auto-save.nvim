@@ -134,21 +134,50 @@ It is also possible to pass a pattern to a trigger event, if you only want to ex
 
 The `condition` field of the configuration allows the user to exclude **auto-save** from saving specific buffers.
 
-Here is an example that disables auto-save for specified file types:
+Here is an example that disables auto-save for specified file types and specific
+filenames:
 
 ```lua
-{
-  condition = function(buf)
-    local filetype = vim.fn.getbufvar(buf, "&filetype")
+-- some recommended exclusions. you can use `:lua print(vim.bo.filetype)` to
+-- get the filetype string of the current buffer
+local excluded_filetypes = {
+  -- this one is especially useful if you use neovim as a commit message editor
+  "gitcommit",
+  -- most of these are usually set to non-modifiable, which prevents autosaving
+  -- by default, but it doesn't hurt to be extra safe.
+  "NvimTree",
+  "Outline",
+  "TelescopePrompt",
+  "alpha",
+  "dashboard",
+  "lazygit",
+  "neo-tree",
+  "oil",
+  "prompt",
+  "toggleterm",
+}
 
-    -- don't save for `sql` and `gitcommit` file types
-    -- Disabling in gitcommit buffers is useful since it restores the ability
-    -- to cancel the commit by exiting the message buffer without saving
-    if vim.list_contains({ "sql", "gitcommit" }, filetype) then
-      return false
-    end
-    return true
+local excluded_filenames = {
+  "do-not-autosave-me.lua"
+}
+
+local save_condition = function(buf)
+  local fn = vim.fn
+  local utils = require("auto-save.utils.data")
+
+  if
+    utils.not_in(fn.getbufvar(buf, "&filetype"), excluded_filetypes)
+    and utils.not_in(fn.expand("%:t"), excluded_filenames)
+  then
+    return true -- met condition(s), can save
   end
+  return false -- can't save
+end
+
+
+-- in your config table
+{
+  condition = save_condition
 }
 ```
 
