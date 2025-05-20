@@ -161,17 +161,14 @@ local excluded_filenames = {
   "do-not-autosave-me.lua"
 }
 
-local save_condition = function(buf)
-  local fn = vim.fn
-  local utils = require("auto-save.utils.data")
-
+local function save_condition(buf)
   if
-    utils.not_in(fn.getbufvar(buf, "&filetype"), excluded_filetypes)
-    and utils.not_in(fn.expand("%:t"), excluded_filenames)
+    vim.tbl_contains(excluded_filetypes, vim.fn.getbufvar(buf, "&filetype"))
+    or vim.tbl_contains(excluded_filenames, vim.fn.expand("%:t"))
   then
-    return true -- met condition(s), can save
+    return false
   end
-  return false -- can't save
+  return true
 end
 
 
