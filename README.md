@@ -134,19 +134,47 @@ It is also possible to pass a pattern to a trigger event, if you only want to ex
 
 The `condition` field of the configuration allows the user to exclude **auto-save** from saving specific buffers.
 
-Here is an example that disables auto-save for specified file types:
+Here is an example that disables auto-save for specified file types and specific
+filenames:
 
 ```lua
-{
-  condition = function(buf)
-    local filetype = vim.fn.getbufvar(buf, "&filetype")
+-- some recommended exclusions. you can use `:lua print(vim.bo.filetype)` to
+-- get the filetype string of the current buffer
+local excluded_filetypes = {
+  -- this one is especially useful if you use neovim as a commit message editor
+  "gitcommit",
+  -- most of these are usually set to non-modifiable, which prevents autosaving
+  -- by default, but it doesn't hurt to be extra safe.
+  "NvimTree",
+  "Outline",
+  "TelescopePrompt",
+  "alpha",
+  "dashboard",
+  "lazygit",
+  "neo-tree",
+  "oil",
+  "prompt",
+  "toggleterm",
+}
 
-    -- don't save for `sql` file types
-    if vim.list_contains({ "sql" }, filetype) then
-      return false
-    end
-    return true
+local excluded_filenames = {
+  "do-not-autosave-me.lua"
+}
+
+local function save_condition(buf)
+  if
+    vim.tbl_contains(excluded_filetypes, vim.fn.getbufvar(buf, "&filetype"))
+    or vim.tbl_contains(excluded_filenames, vim.fn.expand("%:t"))
+  then
+    return false
   end
+  return true
+end
+
+
+-- in your config table
+{
+  condition = save_condition
 }
 ```
 
