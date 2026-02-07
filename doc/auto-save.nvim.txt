@@ -1,4 +1,4 @@
-*auto-save.nvim.txt*        For Neovim >= 0.8.0       Last change: 2025 May 24
+*auto-save.nvim.txt*     For Neovim >= 0.8.0     Last change: 2026 February 07
 
 ==============================================================================
 Table of Contents                           *auto-save.nvim-table-of-contents*
@@ -14,6 +14,7 @@ Table of Contents                           *auto-save.nvim-table-of-contents*
   - Condition                         |auto-save.nvim-configuration-condition|
 5. Usage                                                |auto-save.nvim-usage|
 6. Events / Callbacks                      |auto-save.nvim-events-/-callbacks|
+  - Combine with formatting|auto-save.nvim-events-/-callbacks-combine-with-formatting|
 7. Contributing                                  |auto-save.nvim-contributing|
 8. Acknowledgements                          |auto-save.nvim-acknowledgements|
 
@@ -281,6 +282,40 @@ Another example to print a message when enabling/disabling autosave:
 <
 
 If you want more Events, feel free to open an issue.
+
+
+COMBINE WITH FORMATTING*auto-save.nvim-events-/-callbacks-combine-with-formatting*
+
+There are some caveats on how to (auto-)format a buffer while using this
+plugin. Most of the info here comes from the excellent plugin
+stevearc/conform.nvim <https://github.com/stevearc/conform.nvim>, especially
+the recipes
+<https://github.com/stevearc/conform.nvim/blob/master/doc/recipes.md#autoformat-with-extra-features>.
+
+The easiest way is to format independent of the `modified` state and therefore
+independ of the auto-save. Set up a shortcut for one of the following lua
+functions and format on demand
+
+>
+     When using stevearc/conform.nvim (use your own options)
+    require('conform').format({ async = true, lsp_format = 'fallback' })
+    
+     When using lsp formatting capabilities
+    vim.lsp.buf.format()
+<
+
+It is also possible to hook up formating to saving, which creates an
+auto-format workflow: - Setup auto-format via autocommand on `BufWritePre`
+event or via another plugin (check the `format_on_save` option in
+`conform.nvim`).
+
+Some tips: - Set `noautocmd = true` in the `auto-save.nvim` options to format
+only when saving manually - If using `conform.nvim`, check its `undojoin`
+option. It merges the formatting changes with the previous editing changes so
+that undo reverts both the editing changes and the formatting changes
+`conform.nvim` might’ve applied. Some people find this more intuitive than
+undoing potential auto formatter changes and the actual changes with separate
+undos.
 
 
 ==============================================================================
