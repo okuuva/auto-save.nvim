@@ -244,7 +244,7 @@ If you want more Events, feel free to open an issue.
 
 ### Combine with formatting
 
-There are some caveats on how to (auto-)format a buffer, while using this plugin.
+There are some caveats on how to (auto-)format a buffer while using this plugin.
 Most of the info here comes from the excellent plugin [stevearc/conform.nvim](https://github.com/stevearc/conform.nvim), especially the [recipes](https://github.com/stevearc/conform.nvim/blob/master/doc/recipes.md#autoformat-with-extra-features).
 
 The easiest way is to format independent of the `modified` state and therefore independ of the auto-save.
@@ -261,9 +261,10 @@ It is also possible to hook up formating to saving, which creates an auto-format
 - Setup auto-format via autocommand on `BufWritePre` event or via another plugin (check the `format_on_save` option in `conform.nvim`).
 
 Some tips:
-- Set `noautocmd = true` in the options of this plugin, to only save on manual save
-- Check the `undojoin` option if you are using `conform.nvim`.
-It merges the formatting changes with the previous editing changes, making undo a little smarter.
+- Set `noautocmd = true` in the `auto-save.nvim` options to format only when saving manually
+- If using `conform.nvim`, check its `undojoin` option.
+It merges the formatting changes with the previous editing changes so that undo reverts both the editing changes and the formatting changes `conform.nvim` might've applied.
+Some people find this more intuitive than undoing potential auto formatter changes and the actual changes with separate undos.
 
 ## 🤝 Contributing
 
