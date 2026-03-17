@@ -159,6 +159,10 @@ function M.toggle()
   end
 end
 
+function M.enabled()
+  return autosave_running
+end
+
 function M.setup(custom_opts)
   cnf:set_options(custom_opts)
   logger = require("auto-save.utils.logging").new(cnf:get_options())
