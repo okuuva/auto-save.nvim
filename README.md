@@ -294,6 +294,55 @@ Some tips:
 It merges the formatting changes with the previous editing changes so that undo reverts both the editing changes and the formatting changes `conform.nvim` might've applied.
 Some people find this more intuitive than undoing potential auto formatter changes and the actual changes with separate undos.
 
+## 🍿 snacks.toggle Integration
+
+If you are using [snacks.nvim](https://github.com/folke/snacks.nvim) and you want to add a toggle option for auto-save, simply add the following snippet after calling the plugin's setup function:
+
+```lua
+local autosave = require("auto-save")
+
+require("snacks.toggle").new({
+  name = "Auto Save",
+  get = function()
+    return autosave.enabled()
+  end,
+  set = function(state)
+    if state then
+      autosave.on()
+    else
+      autosave.off()
+    end
+  end,
+}):map("<leader>uv")
+```
+
+### Example for configuring snacks.toggle with Lazy.nvim
+
+```lua
+{
+  "okuuva/auto-save.nvim",
+  ...
+  config = function(_, opts)
+    local autosave = require("auto-save")
+    autosave.setup(opts)
+
+    require("snacks.toggle").new({
+      name = "Auto Save",
+      get = function()
+         return autosave.enabled()
+      end,
+      set = function(state)
+          if state then
+              autosave.on()
+          else
+              autosave.off()
+          end
+      end,
+    }):map("<leader>uv") -- Or any other keymap (for details, check the snacks.toggle docs at https://github.com/folke/snacks.nvim/blob/main/docs/toggle.md)
+  end,
+},
+```
+
 ## 🤝 Contributing
 
 - All pull requests are welcome.
