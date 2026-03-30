@@ -1,4 +1,4 @@
-*auto-save.nvim.txt*     For Neovim >= 0.8.0     Last change: 2026 February 07
+*auto-save.nvim.txt*       For Neovim >= 0.8.0      Last change: 2026 March 30
 
 ==============================================================================
 Table of Contents                           *auto-save.nvim-table-of-contents*
@@ -15,8 +15,10 @@ Table of Contents                           *auto-save.nvim-table-of-contents*
 5. Usage                                                |auto-save.nvim-usage|
 6. Events / Callbacks                      |auto-save.nvim-events-/-callbacks|
   - Combine with formatting|auto-save.nvim-events-/-callbacks-combine-with-formatting|
-7. Contributing                                  |auto-save.nvim-contributing|
-8. Acknowledgements                          |auto-save.nvim-acknowledgements|
+7. snacks.toggle Integration        |auto-save.nvim-snacks.toggle-integration|
+  - Example for configuring snacks.toggle with Lazy.nvim|auto-save.nvim-snacks.toggle-integration-example-for-configuring-snacks.toggle-with-lazy.nvim|
+8. Contributing                                  |auto-save.nvim-contributing|
+9. Acknowledgements                          |auto-save.nvim-acknowledgements|
 
 ==============================================================================
 1. Features                                          *auto-save.nvim-features*
@@ -319,7 +321,61 @@ undos.
 
 
 ==============================================================================
-7. Contributing                                  *auto-save.nvim-contributing*
+7. snacks.toggle Integration        *auto-save.nvim-snacks.toggle-integration*
+
+If you are using snacks.nvim <https://github.com/folke/snacks.nvim> and you
+want to add a toggle option for auto-save, simply add the following snippet
+after calling the plugin’s setup function:
+
+>lua
+    local autosave = require("auto-save")
+    
+    require("snacks.toggle").new({
+      name = "Auto Save",
+      get = function()
+        return autosave.enabled()
+      end,
+      set = function(state)
+        if state then
+          autosave.on()
+        else
+          autosave.off()
+        end
+      end,
+    }):map("<leader>uv")
+<
+
+
+EXAMPLE FOR CONFIGURING SNACKS.TOGGLE WITH LAZY.NVIM*auto-save.nvim-snacks.toggle-integration-example-for-configuring-snacks.toggle-with-lazy.nvim*
+
+>lua
+    {
+      "okuuva/auto-save.nvim",
+      ...
+      config = function(_, opts)
+        local autosave = require("auto-save")
+        autosave.setup(opts)
+    
+        require("snacks.toggle").new({
+          name = "Auto Save",
+          get = function()
+             return autosave.enabled()
+          end,
+          set = function(state)
+              if state then
+                  autosave.on()
+              else
+                  autosave.off()
+              end
+          end,
+        }):map("<leader>uv") -- Or any other keymap (for details, check the snacks.toggle docs at https://github.com/folke/snacks.nvim/blob/main/docs/toggle.md)
+      end,
+    },
+<
+
+
+==============================================================================
+8. Contributing                                  *auto-save.nvim-contributing*
 
 - All pull requests are welcome.
 - If you encounter bugs please open an issue.
@@ -328,13 +384,13 @@ undos.
 
 
 ==============================================================================
-8. Acknowledgements                          *auto-save.nvim-acknowledgements*
+9. Acknowledgements                          *auto-save.nvim-acknowledgements*
 
 This plugin wouldn’t exist without Pocco81 <https://github.com/Pocco81>’s
 work on the original <https://github.com/Pocco81/auto-save.nvim>.
 
 ==============================================================================
-9. Links                                                *auto-save.nvim-links*
+10. Links                                               *auto-save.nvim-links*
 
 1. *@commitlint/config-conventional*: 
 
