@@ -106,6 +106,7 @@ EOF
   condition = nil,
   write_all_buffers = false, -- write all buffers when the current one meets `condition`
   noautocmd = false, -- do not execute autocmds when saving
+  nested = false, -- nest autocmds when saving
   lockmarks = false, -- lock marks when saving, see `:h lockmarks` for more details
   debounce_delay = 1000, -- delay after which a pending save is executed
  -- log debug messages to 'auto-save.log' file in neovim cache directory, set to `true` to enable
@@ -293,6 +294,11 @@ Some tips:
 - If using `conform.nvim`, check its `undojoin` option.
 It merges the formatting changes with the previous editing changes so that undo reverts both the editing changes and the formatting changes `conform.nvim` might've applied.
 Some people find this more intuitive than undoing potential auto formatter changes and the actual changes with separate undos.
+
+You can also set `nested = true` in options, to allow firing other autocmd events
+when automatic save is triggered. This way you don't need to worry about
+anything, things should just work with the automatic save, the same as with
+manual save.
 
 ## 🍿 snacks.toggle Integration
 
