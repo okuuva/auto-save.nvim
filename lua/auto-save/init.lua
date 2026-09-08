@@ -118,6 +118,7 @@ function M.on()
     end,
     group = augroup,
     desc = "Immediately save a buffer",
+    nested = not cnf.opts.noautocmd,
   })
   autocmds.create_autocmd_for_trigger_events(events.defer_save, {
     callback = function(opts)
@@ -127,6 +128,7 @@ function M.on()
     end,
     group = augroup,
     desc = "Save a buffer after the `debounce_delay`",
+    nested = not cnf.opts.noautocmd,
   })
   autocmds.create_autocmd_for_trigger_events(events.cancel_deferred_save, {
     callback = function(opts)
