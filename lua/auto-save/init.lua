@@ -14,6 +14,8 @@ local autosave_running = nil
 autocmds.create_augroup({ clear = true })
 
 local timers_by_buffer = {}
+local conflicts = {}
+local conflict_group
 
 --- @param buf number
 local function cancel_timer(buf)
@@ -73,11 +75,11 @@ local function save(buf)
     return
   end
 
-  -- A deferred save can outlive its original condition.
-  if not should_be_saved(buf) then
-    logger.log(buf, "Abort saving buffer: condition no longer holds")
-
-    return
+  for _, target in ipairs(cnf.opts.write_all_buffers and api.nvim_list_bufs() or { buf }) do
+    if conflicts[target] and api.nvim_buf_is_loaded(target) and api.nvim_buf_get_option(target, "modified") then
+      logger.log(target, "Abort saving buffer: unresolved disk conflict")
+      return
+    end
   end
 
   autocmds.exec_autocmd("AutoSaveWritePre", { saved_buffer = buf })
@@ -175,6 +177,36 @@ end
 function M.setup(custom_opts)
   cnf:set_options(custom_opts)
   logger = require("auto-save.utils.logging").new(cnf:get_options())
+
+  -- Observe detected changes; this does not poll the disk or run checktime.
+  -- Keep recovery events active while auto-save is disabled, too.
+  if not conflict_group then
+    conflict_group = api.nvim_create_augroup("AutoSaveConflicts", { clear = true })
+    api.nvim_create_autocmd("FileChangedShell", {
+      group = conflict_group,
+      callback = function(event)
+        if vim.v.fcs_reason == "conflict" or vim.v.fcs_reason == "deleted" then
+          vim.v.fcs_choice = ""
+          if not conflicts[event.buf] then
+            vim.notify(
+              "AutoSave paused: reload or save manually: " .. api.nvim_buf_get_name(event.buf),
+              vim.log.levels.WARN
+            )
+          end
+          conflicts[event.buf] = true
+          cancel_timer(event.buf)
+        else
+          vim.v.fcs_choice = "ask"
+        end
+      end,
+    })
+    api.nvim_create_autocmd({ "BufReadPost", "BufWritePost", "BufWipeout" }, {
+      group = conflict_group,
+      callback = function(event)
+        conflicts[event.buf] = nil
+      end,
+    })
+  end
 
   if autosave_running == nil then
     if cnf.opts.enabled then

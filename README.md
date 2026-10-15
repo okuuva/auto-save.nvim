@@ -134,10 +134,6 @@ It is also possible to pass a pattern to a trigger event, if you only want to ex
 
 The `condition` field of the configuration allows the user to exclude **auto-save** from saving specific buffers.
 
-It is evaluated when a save event is triggered and again immediately before writing,
-so a pending save is skipped if its condition no longer holds. The callback should
-be safe to call repeatedly; avoid relying on an exact invocation count.
-
 Here is an example that disables auto-save for specified file types and specific
 filenames:
 
