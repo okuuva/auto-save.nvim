@@ -25,5 +25,8 @@ jobs:
           neovim: true
           version: ${{ matrix.neovim_version }}
 
+      - name: Setup mise
+        uses: jdx/mise-action@v5
+
       - name: Run tests
-        run: make test
+        run: mise run test

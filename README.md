@@ -349,7 +349,7 @@ require("snacks.toggle").new({
 - If you encounter bugs please open an issue.
 - Please use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) when commiting.
   - See [@commitlint/config-conventional](https://github.com/conventional-changelog/commitlint/tree/master/@commitlint/config-conventional) for more details.
-- Run the test-suite via `make test`
+- Run the test-suite via `mise run test`
 
 ## 👋 Acknowledgements
 
