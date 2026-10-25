@@ -2,19 +2,17 @@ local new_set = MiniTest.new_set
 local eq = MiniTest.expect.equality
 
 local T = new_set({ hooks = {
-  pre_case = function()
-    reset_plugin_state()
-  end,
+  pre_case = reset_plugin_state,
 } })
 
 T["fires auto-save lifecycle hooks"] = function()
   local events = {}
-  local path = vim.fn.tempname()
-  vim.fn.writefile({ "initial" }, path)
-  vim.cmd("edit " .. vim.fn.fnameescape(path))
-  local buf = vim.api.nvim_get_current_buf()
-
   local group = vim.api.nvim_create_augroup("TestAutoSaveHooks", { clear = true })
+  MiniTest.finally(function()
+    vim.api.nvim_del_augroup_by_id(group)
+  end)
+  local path, buf = setup_test_file({ "initial" })
+
   for _, event in ipairs({ "AutoSaveEnable", "AutoSaveWritePre", "AutoSaveWritePost", "AutoSaveDisable" }) do
     local name = event
     vim.api.nvim_create_autocmd("User", {
@@ -44,10 +42,6 @@ T["fires auto-save lifecycle hooks"] = function()
     { name = "AutoSaveDisable" },
   })
   eq(vim.fn.readfile(path), { "changed" })
-
-  vim.cmd("silent! bwipeout! " .. buf)
-  vim.api.nvim_del_augroup_by_id(group)
-  os.remove(path)
 end
 
 return T

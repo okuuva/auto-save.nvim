@@ -2,16 +2,11 @@ local new_set = MiniTest.new_set
 local eq = MiniTest.expect.equality
 
 local T = new_set({ hooks = {
-  pre_case = function()
-    reset_plugin_state()
-  end,
+  pre_case = reset_plugin_state,
 } })
 
 T["saves modified buffer immediately after `immediate_save` event"] = function()
-  local path = vim.fn.tempname()
-  vim.fn.writefile({ "initial" }, path)
-  vim.cmd("edit " .. vim.fn.fnameescape(path))
-  local buf = vim.api.nvim_get_current_buf()
+  local path = setup_test_file({ "initial" })
 
   -- disable deferred_save
   require("auto-save").setup({
@@ -28,9 +23,6 @@ T["saves modified buffer immediately after `immediate_save` event"] = function()
   -- Save happens after BufLeave
   vim.cmd("enew")
   eq(vim.fn.readfile(path), { "helloinitial" })
-
-  vim.cmd("silent! bwipeout! " .. buf)
-  os.remove(path)
 end
 
 return T

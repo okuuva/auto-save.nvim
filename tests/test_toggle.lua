@@ -2,9 +2,7 @@ local new_set = MiniTest.new_set
 local eq = MiniTest.expect.equality
 
 local T = new_set({ hooks = {
-  pre_case = function()
-    reset_plugin_state()
-  end,
+  pre_case = reset_plugin_state,
 } })
 
 T["ASToggle toggles auto-save"] = function()

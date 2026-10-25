@@ -15,16 +15,11 @@ local function save_condition(buf)
 end
 
 local T = new_set({ hooks = {
-  pre_case = function()
-    reset_plugin_state()
-  end,
+  pre_case = reset_plugin_state,
 } })
 
 T["condition works with excluded filetypes"] = function()
-  local path = vim.fn.tempname()
-  vim.fn.writefile({ "initial" }, path)
-  vim.cmd("edit " .. vim.fn.fnameescape(path))
-  local buf = vim.api.nvim_get_current_buf()
+  local path, buf = setup_test_file({ "initial" })
   vim.bo[buf].filetype = "gitcommit"
 
   require("auto-save").setup({
@@ -35,18 +30,15 @@ T["condition works with excluded filetypes"] = function()
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "changed" })
   vim.cmd("enew!")
   eq(vim.fn.readfile(path), { "initial" })
-
-  vim.cmd("silent! bwipeout! " .. buf)
-  os.remove(path)
 end
 
 T["condition works with excluded filenames"] = function()
   local dir = vim.fn.tempname()
   vim.fn.mkdir(dir, "p")
-  local path = dir .. "/do-not-autosave-me.lua"
-  vim.fn.writefile({ "initial" }, path)
-  vim.cmd("edit " .. vim.fn.fnameescape(path))
-  local buf = vim.api.nvim_get_current_buf()
+  local path, buf = setup_test_file({ "initial" }, dir .. "/do-not-autosave-me.lua")
+  MiniTest.finally(function()
+    vim.fn.delete(dir, "d")
+  end)
 
   require("auto-save").setup({
     condition = save_condition,
@@ -56,10 +48,6 @@ T["condition works with excluded filenames"] = function()
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "changed" })
   vim.cmd("enew!")
   eq(vim.fn.readfile(path), { "initial" })
-
-  vim.cmd("silent! bwipeout! " .. buf)
-  os.remove(path)
-  vim.fn.delete(dir, "d")
 end
 
 T["condition works with special buffers"] = function()
@@ -70,6 +58,10 @@ T["condition works with special buffers"] = function()
   local save_started = false
   local buf_leave_ran = false
   local group = vim.api.nvim_create_augroup("TestCondition", { clear = true })
+  MiniTest.finally(function()
+    vim.api.nvim_del_augroup_by_id(group)
+    vim.cmd("silent! bwipeout! " .. buf)
+  end)
   vim.api.nvim_create_autocmd("BufLeave", {
     buffer = buf,
     group = group,
@@ -99,16 +91,10 @@ T["condition works with special buffers"] = function()
   vim.cmd("enew!")
   eq(buf_leave_ran, true)
   eq(save_started, false)
-
-  vim.cmd("silent! bwipeout! " .. buf)
-  vim.api.nvim_del_augroup_by_id(group)
 end
 
 T["condition allows non-excluded buffers"] = function()
-  local path = vim.fn.tempname()
-  vim.fn.writefile({ "initial" }, path)
-  vim.cmd("edit " .. vim.fn.fnameescape(path))
-  local buf = vim.api.nvim_get_current_buf()
+  local path, buf = setup_test_file({ "initial" })
 
   require("auto-save").setup({
     condition = save_condition,
@@ -118,9 +104,6 @@ T["condition allows non-excluded buffers"] = function()
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "changed" })
   vim.cmd("enew")
   eq(vim.fn.readfile(path), { "changed" })
-
-  vim.cmd("silent! bwipeout! " .. buf)
-  os.remove(path)
 end
 
 return T

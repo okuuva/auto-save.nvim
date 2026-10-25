@@ -2,15 +2,11 @@ local new_set = MiniTest.new_set
 local eq = MiniTest.expect.equality
 
 local T = new_set({ hooks = {
-  pre_case = function()
-    reset_plugin_state()
-  end,
+  pre_case = reset_plugin_state,
 } })
 
 T["saves modified buffer after debounce_delay after `defer_save` event"] = function()
-  local path = vim.fn.tempname()
-  vim.fn.writefile({ "initial" }, path)
-  vim.cmd("edit " .. vim.fn.fnameescape(path))
+  local path = setup_test_file({ "initial" })
 
   require("auto-save").setup({ debounce_delay = 100 })
 
@@ -27,16 +23,10 @@ T["saves modified buffer after debounce_delay after `defer_save` event"] = funct
     true
   )
   eq(vim.fn.readfile(path), { "helloinitial" })
-
-  vim.cmd("silent! bwipeout!")
-  os.remove(path)
 end
 
 T["resets debounce delay after repeated edits"] = function()
-  local path = vim.fn.tempname()
-  vim.fn.writefile({ "initial" }, path)
-  vim.cmd("edit " .. vim.fn.fnameescape(path))
-  local buf = vim.api.nvim_get_current_buf()
+  local path = setup_test_file({ "initial" })
 
   require("auto-save").setup({
     debounce_delay = 1000,
@@ -64,9 +54,6 @@ T["resets debounce delay after repeated edits"] = function()
     true
   )
   eq(vim.fn.readfile(path), { "helloinitialagain" })
-
-  vim.cmd("silent! bwipeout! " .. buf)
-  os.remove(path)
 end
 
 return T
