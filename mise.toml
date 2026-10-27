@@ -1,0 +1,12 @@
+[tasks.setup]
+description = "Clone mini.nvim test dependency"
+run = "test -d tests/.deps/mini.nvim || git clone --depth 1 https://github.com/nvim-mini/mini.nvim tests/.deps/mini.nvim"
+
+[tasks.test]
+description = "Run test suite headless"
+depends = ["setup"]
+run = "nvim --headless -u tests/init.lua -c 'lua MiniTest.run()'"
+
+[tasks.clean]
+description = "Remove test dependencies"
+run = "rm -rf tests/.deps"
