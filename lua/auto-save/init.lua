@@ -73,6 +73,13 @@ local function save(buf)
     return
   end
 
+  -- A deferred save can outlive its original condition.
+  if not should_be_saved(buf) then
+    logger.log(buf, "Abort saving buffer: condition no longer holds")
+
+    return
+  end
+
   autocmds.exec_autocmd("AutoSaveWritePre", { saved_buffer = buf })
 
   local noautocmd = cnf.opts.noautocmd and "noautocmd " or ""
@@ -132,9 +139,7 @@ function M.on()
   })
   autocmds.create_autocmd_for_trigger_events(events.cancel_deferred_save, {
     callback = function(opts)
-      if should_be_saved(opts.buf) then
-        cancel_timer(opts.buf)
-      end
+      cancel_timer(opts.buf)
     end,
     group = augroup,
     desc = "Cancel a pending save timer for a buffer",
