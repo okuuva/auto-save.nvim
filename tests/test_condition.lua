@@ -106,4 +106,46 @@ T["condition allows non-excluded buffers"] = function()
   eq(vim.fn.readfile(path), { "changed" })
 end
 
+T["skips a deferred save when condition becomes false before writing"] = function()
+  local path, buf = setup_test_file({ "initial" })
+  local allowed = true
+  local write_hooks = 0
+  local group = vim.api.nvim_create_augroup("TestConditionRecheck", { clear = true })
+  MiniTest.finally(function()
+    vim.api.nvim_del_augroup_by_id(group)
+  end)
+  vim.api.nvim_create_autocmd("User", {
+    pattern = { "AutoSaveWritePre", "AutoSaveWritePost" },
+    group = group,
+    callback = function()
+      write_hooks = write_hooks + 1
+    end,
+  })
+
+  require("auto-save").setup({
+    debounce_delay = 100,
+    condition = function()
+      return allowed
+    end,
+    trigger_events = {
+      immediate_save = {},
+      defer_save = { "InsertLeave" },
+      cancel_deferred_save = {},
+    },
+  })
+
+  local keys = vim.api.nvim_replace_termcodes("ihello<Esc>", true, false, true)
+  vim.api.nvim_feedkeys(keys, "x", true)
+  eq(vim.fn.readfile(path), { "initial" })
+  allowed = false
+  vim.wait(300, function()
+    return false
+  end)
+
+  eq(vim.fn.readfile(path), { "initial" })
+  eq(vim.api.nvim_buf_get_lines(buf, 0, -1, false), { "helloinitial" })
+  eq(vim.bo[buf].modified, true)
+  eq(write_hooks, 0)
+end
+
 return T

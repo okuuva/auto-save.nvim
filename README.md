@@ -134,6 +134,10 @@ It is also possible to pass a pattern to a trigger event, if you only want to ex
 
 The `condition` field of the configuration allows the user to exclude **auto-save** from saving specific buffers.
 
+The condition is checked when a save is triggered and again before writing, so
+make sure it can be called more than once per save attempt. Use the supplied
+`buf` instead of the current buffer, as they might differ when a deferred save runs.
+
 Here is an example that disables auto-save for specified file types and specific
 filenames:
 
@@ -164,7 +168,7 @@ local excluded_filenames = {
 local function save_condition(buf)
   if
     vim.tbl_contains(excluded_filetypes, vim.fn.getbufvar(buf, "&filetype"))
-    or vim.tbl_contains(excluded_filenames, vim.fn.expand("%:t"))
+    or vim.tbl_contains(excluded_filenames, vim.fn.fnamemodify(vim.api.nvim_buf_get_name(buf), ":t"))
   then
     return false
   end

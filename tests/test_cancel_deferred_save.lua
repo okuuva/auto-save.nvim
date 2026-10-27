@@ -24,4 +24,36 @@ T["cancels pending deferred save on `cancel_deferred_save` event"] = function()
   eq(vim.fn.readfile(path), { "initial" })
 end
 
+T["cancels a pending save even when condition has become false"] = function()
+  local path, buf = setup_test_file({ "initial" })
+  local allowed = true
+
+  require("auto-save").setup({
+    debounce_delay = 100,
+    condition = function()
+      return allowed
+    end,
+    trigger_events = {
+      immediate_save = {},
+      defer_save = { "InsertLeave" },
+      cancel_deferred_save = { "InsertEnter" },
+    },
+  })
+
+  local keys = vim.api.nvim_replace_termcodes("ihello<Esc>", true, false, true)
+  vim.api.nvim_feedkeys(keys, "x", true)
+  eq(vim.fn.readfile(path), { "initial" })
+  allowed = false
+  vim.cmd("doautocmd InsertEnter")
+
+  -- Re-allow saving so a missed cancellation cannot be hidden by the recheck.
+  allowed = true
+  vim.wait(300, function()
+    return false
+  end)
+
+  eq(vim.fn.readfile(path), { "initial" })
+  eq(vim.bo[buf].modified, true)
+end
+
 return T
